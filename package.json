@@ -15,11 +15,13 @@
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.3",
     "@next/font": "^13.1.1",
+    "axios": "^1.2.2",
     "leaflet": "^1.9.3",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-leaflet": "^4.2.0"
+    "react-leaflet": "^4.2.0",
+    "react-query": "^3.39.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.16.4",

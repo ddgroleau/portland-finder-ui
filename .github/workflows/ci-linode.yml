@@ -1,0 +1,67 @@
+name: Deploy to Linode Compute Instance
+
+on:
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install modules
+        run: yarn
+      - name: Run eslint
+        run: yarn lint
+      - name: Run Tests
+        run: yarn test:ci
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and Push to DockerHub
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/portland-finder-ui:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Pull and Run Docker Image on Linode Remote Server
+        uses: appleboy/ssh-action@master
+        env:
+          HOST_PORT: ${{ secrets.HOST_PORT }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }} 
+          passphrase: ${{ secrets.PASSPHRASE }}
+          envs: HOST_PORT
+          script: |
+            export envArray=( $HOST_PORT ) \
+            && docker pull thoughtspring/portland-finder-ui \
+            && if [[ -z $(docker container ls -a | grep "portland-finder-ui") ]]; \
+            then echo "No container found. Starting portland-finder-ui container..."; \
+            else docker stop portland-finder-ui && docker rm portland-finder-ui; \
+            fi \
+            && docker run -d -p "${envArray[0]}":3000 --name portland-finder-ui --restart always \
+            thoughtspring/portland-finder-ui \
+            && exit \
+            && exit 0;

@@ -17,7 +17,6 @@ const Layout = ({title,description,children}:{title:string,description:string,ch
                 <meta name="theme-color" content={theme.palette.primary.main} />
                 <meta name="robots" content="index, follow"/>
                 <link rel="icon" href="/favicon.ico" />
-
                 <GlobalStyles 
                     styles={{
                         "html, body": { padding: 0, margin: 0 },

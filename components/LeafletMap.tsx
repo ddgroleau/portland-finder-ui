@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Coordinates } from 'src/coordinates';
+import { Coordinates, ZOOM_IN } from 'src/coordinates';
 import { Location } from 'src/location';
 
 type LeafletMapProps = {
@@ -12,7 +12,6 @@ type LeafletMapProps = {
     zoom:number
     setCenter:Dispatch<SetStateAction<Coordinates>>
     setZoom:Dispatch<SetStateAction<number>>
-    popUpRef:any
 }
 
 const LeafletMap = ({
@@ -24,7 +23,6 @@ const LeafletMap = ({
     zoom, 
     setCenter, 
     setZoom,
-    popUpRef
 }:LeafletMapProps) => {
     const [leaflet, setLeaflet] = useState<any>(null);
 
@@ -40,7 +38,7 @@ const LeafletMap = ({
 
     const handleMarkerClick = (coordinates:Coordinates) => {
         setCenter(coordinates);
-        setZoom(18);
+        setZoom(ZOOM_IN);
     };
 
     return (
@@ -72,10 +70,10 @@ const LeafletMap = ({
                             return (
                                 <leaflet.Marker 
                                     key={index} 
-                                    eventHandlers={{doubleClick: ()=>handleMarkerClick(location) }} 
+                                    eventHandlers={{ doubleClick: ()=>handleMarkerClick(location) }} 
                                     position={[location.latitude, location.longitude]}
                                 >
-                                    <leaflet.Popup ref={popUpRef}>
+                                    <leaflet.Popup>
                                         <strong><u>{location.name}</u></strong><br/>
                                         {location.streetAddress}<br/>
                                         {location.city}, {location.state} {location.zipCode}<br/>

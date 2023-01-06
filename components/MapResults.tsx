@@ -82,7 +82,9 @@ const MapResults = () => {
                                         key={index} 
                                         style={{ 
                                             marginBlock: index !== 0 ? "1rem" : "0 1rem", 
-                                            display: !showAllResults && index >= 5 ? "none" : "inherit" 
+                                            display: !showAllResults && index >= 5 ? "none" : "list-item" ,
+                                            textIndent: "-1rem",
+                                            paddingLeft: "1rem"
                                         }}
                                     >
                                         <button 

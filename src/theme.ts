@@ -33,11 +33,10 @@ const theme = createTheme({
         },
         h3: {
             fontSize: "x-large",
-            paddingBlock: "1rem"
+            paddingBlock: "0.5rem"
         },
         h4: {
             fontSize: "large",
-            paddingBlock: "1rem"
         }
     },
 });

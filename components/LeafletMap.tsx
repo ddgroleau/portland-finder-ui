@@ -41,6 +41,9 @@ const LeafletMap = ({
         setZoom(ZOOM_IN);
     };
 
+    const formatPhoneNumber = (phone:string) => 
+        `(${phone.substring(0,3)}) ${phone.substring(3,6)}-${phone.substring(6,10)}`;
+
     return (
         <section key={center.latitude}>
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
@@ -79,7 +82,9 @@ const LeafletMap = ({
                                         {location.city}, {location.state} {location.zipCode}<br/>
                                         <Link href={location.directionsUri} target="_blank">Directions</Link>
                                             &nbsp;|&nbsp;
-                                        <Link href={`tel:${location.phone}`} target="_blank">Call</Link>
+                                        <Link href={`tel:${location.phone}`} target="_blank">
+                                            {formatPhoneNumber(location.phone)}
+                                        </Link>
                                     </leaflet.Popup>
                                 </leaflet.Marker>
                             );

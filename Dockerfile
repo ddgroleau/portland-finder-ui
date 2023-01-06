@@ -8,6 +8,8 @@ FROM node:alpine AS build
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
+ARG NEXT_PUBLIC_API_URI
+ENV NEXT_PUBLIC_API_URI=$NEXT_PUBLIC_API_URI
 RUN yarn build
 
 FROM node:alpine AS production

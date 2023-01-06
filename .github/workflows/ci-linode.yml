@@ -36,6 +36,7 @@ jobs:
       - name: Build and Push to DockerHub
         uses: docker/build-push-action@v3
         with:
+          build-args: NEXT_PUBLIC_API_URI=${{ secrets.NEXT_PUBLIC_API_URI }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/portland-finder-ui:latest
 
@@ -62,6 +63,7 @@ jobs:
             else docker stop portland-finder-ui && docker rm portland-finder-ui; \
             fi \
             && docker run -d -p "${envArray[0]}":3000 --name portland-finder-ui --restart always \
+            -e NODE_ENV="production" \
             thoughtspring/portland-finder-ui \
             && exit \
             && exit 0;

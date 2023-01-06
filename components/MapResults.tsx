@@ -69,7 +69,10 @@ const MapResults = () => {
             <Box display={"flex"} flexDirection={!isDesktop ? "column" : "row"} gap="5vw" marginBottom="2rem">
                 <Box>
                     <Typography variant={"h3"}>
-                        <u>Closest {!showAllResults ? 5 : locations.length - 1 } Locations:</u>
+                        <u>
+                            {!showAllResults ? 
+                                "Closest 5 locations" : `All ${locations.length - 1} locations in radius` } 
+                        </u>
                     </Typography>
                     <ol>
                         {!locations || locations.length <= 0 ? undefined :

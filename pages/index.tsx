@@ -4,11 +4,11 @@ import { Container, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
 import theme from 'src/theme';
 import { usePosition } from 'src/usePosition';
 
 const Home = () => {
-    const {latitude, longitude, error} = usePosition();
 
     return (
         <Layout title="Find Purple Trash Bags" description='Find Purple Trash Bag Locations in Portland, Maine'>
@@ -37,7 +37,7 @@ const Home = () => {
                             </Link>. Never use this site ever.... ever.
                         </i>
                     </small>
-                    <MapResults key={latitude} latitude={latitude} longitude={longitude} />
+                    <MapResults />
                 </Box>
             </Container>
         </Layout>

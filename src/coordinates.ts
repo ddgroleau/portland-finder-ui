@@ -4,8 +4,8 @@ export interface Coordinates {
 }
 
 export const defaultCoordinates:Coordinates = {
-    latitude: 0,// 43.6591,
-    longitude: -0//70.2568
+    latitude: 43.6591,
+    longitude: -70.2568
 };
 
 export const ZOOM_OUT = 14;

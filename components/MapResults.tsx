@@ -6,9 +6,11 @@ import { useGetLocationsInRadius } from 'src/api';
 import { Coordinates, ZOOM_IN, ZOOM_OUT } from 'src/coordinates';
 import { Location } from 'src/location';
 import theme from 'src/theme';
+import { usePosition } from 'src/usePosition';
 import LeafletMap from './LeafletMap';
 
-const MapResults = ({latitude,longitude}:Coordinates) => {
+const MapResults = () => {
+    const {latitude, longitude, error} = usePosition();
     const [radius, setRadius] = useState<number>(10);
     const { data, refetch, isRefetching } = useGetLocationsInRadius(radius, latitude, longitude);
     const [locations, setLocations] = useState<Location[]>([]);
@@ -39,8 +41,9 @@ const MapResults = ({latitude,longitude}:Coordinates) => {
                 setLocations(newLocations.data);
         });
     },[latitude,longitude,radius,refetch]);
+    
     return (
-        <Box sx={{ paddingBlock: "1rem 2rem" }}>
+        <Box key={latitude} sx={{ paddingBlock: "1rem 2rem" }}>
             <Typography variant={"h3"}>Showing locations within {radius} miles.</Typography>
             <Box sx={{ maxWidth: "16rem" }}>
                 <label htmlFor="slider">Use the slider to change your search radius:</label>

@@ -8,6 +8,7 @@ import { Location } from 'src/location';
 import theme from 'src/theme';
 import { usePosition } from 'src/usePosition';
 import LeafletMap from './LeafletMap';
+import RadiusSlider from './RadiusSlider';
 
 const MapResults = () => {
     const [showAllResults, setShowAllResults] = useState<boolean>(false);
@@ -15,6 +16,7 @@ const MapResults = () => {
     const [radius, setRadius] = useState<number>(10);
     const { refetch } = useGetLocationsInRadius(radius, latitude, longitude);
     const [locations, setLocations] = useState<Location[]>([]);
+    const [debounceTimeout, setDebounceTimeout] = useState<any>(null);
     const [center, setCenter] = useState<Coordinates>({
         latitude:latitude,
         longitude:longitude
@@ -40,10 +42,14 @@ const MapResults = () => {
 
     useEffect(()=> {
         setCenter({latitude:latitude,longitude:longitude});
-        refetch().then(newLocations => {
-            if(newLocations.data)
-                setLocations(newLocations.data);
-        });
+
+        if(debounceTimeout) clearTimeout(debounceTimeout);
+        setDebounceTimeout(setTimeout(()=> 
+            refetch().then(newLocations => {
+                if(newLocations.data)
+                    setLocations(newLocations.data);
+            }),
+        700));
     },[latitude,longitude,radius]);
 
     return (
@@ -68,7 +74,7 @@ const MapResults = () => {
             </Box>
             {!locations || locations.length <= 0 ? undefined : 
                 <Box display={"flex"} flexDirection={!isDesktop ? "column" : "row"} gap="5vw" marginBottom="2rem">
-                    <Box>
+                    <Box width="100%">
                         <Typography variant={"h3"}>
                             <u>
                                 {!showAllResults ? 
@@ -116,28 +122,7 @@ const MapResults = () => {
                                 })}
                         </ol>
                     </Box>
-                    <Box>
-                        <Typography variant={"h3"}><u>Showing locations within {radius} miles</u></Typography>
-                        <Box sx={{ maxWidth: "16rem" }}>
-                            <label htmlFor="slider">
-                                <Typography variant={"h4"} padding="1rem 0 0.5rem 0">
-                                Use the slider to change your search radius:
-                                </Typography>
-                            </label>
-                            <Slider
-                                id="slider" 
-                                value={radius} 
-                                color={"secondary"} 
-                                valueLabelDisplay="auto" 
-                                style={{ marginTop: "0.5rem" }}
-                                step={1}
-                                min={1}
-                                max={20}
-                                onChange={(event:any)=>setRadius(event?.target.value)}
-                                marks={[{value: 1, label: '1 mile'},{value: 20, label: '20 miles'}]}
-                            />
-                        </Box>
-                    </Box>
+                    <RadiusSlider radius={radius} setRadius={setRadius} />
                 </Box>}
             <div ref={mapRef} key={center.latitude}>
                 <LeafletMap 

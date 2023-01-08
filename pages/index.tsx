@@ -4,12 +4,9 @@ import { Container, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect } from 'react';
 import theme from 'src/theme';
-import { usePosition } from 'src/usePosition';
 
 const Home = () => {
-
     return (
         <Layout title="Find Purple Trash Bags" description='Find Purple Trash Bag Locations in Portland, Maine'>
             <Container maxWidth="lg">

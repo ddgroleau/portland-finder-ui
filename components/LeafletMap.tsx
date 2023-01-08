@@ -46,7 +46,7 @@ const LeafletMap = ({
         `(${phone.substring(0,3)}) ${phone.substring(3,6)}-${phone.substring(6,10)}`;
 
     return (
-        <section key={center.latitude}>
+        <section style={{ minHeight: mapHeight, minWidth: mapWidth }}>
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
                 integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
                 crossOrigin=""/>

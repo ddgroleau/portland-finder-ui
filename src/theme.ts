@@ -10,6 +10,16 @@ export const roboto = Roboto({
 
 // Create a theme instance.
 const theme = createTheme({
+    components : {
+        MuiSlider: {
+            styleOverrides: {
+                markLabel: {
+                    color: '#FFFFFF',
+                    textIndent: '2rem'
+                }
+            } 
+        }
+    },
     palette: {
         primary: {
             main: '#0C1618',
@@ -21,6 +31,7 @@ const theme = createTheme({
             main: "#FF101F",
         },
     },
+    
     typography: {
         fontFamily: roboto.style.fontFamily,
         h1: {

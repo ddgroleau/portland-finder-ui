@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Slider, Typography, useMediaQuery } from '@mui/material';
-import { Popup } from 'leaflet';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Box, Button, Slider, Typography, useMediaQuery } from '@mui/material';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetLocationsInRadius } from 'src/api';
@@ -13,7 +13,7 @@ const MapResults = () => {
     const [showAllResults, setShowAllResults] = useState<boolean>(false);
     const {latitude, longitude, error} = usePosition();
     const [radius, setRadius] = useState<number>(10);
-    const { data, refetch, isRefetching } = useGetLocationsInRadius(radius, latitude, longitude);
+    const { refetch } = useGetLocationsInRadius(radius, latitude, longitude);
     const [locations, setLocations] = useState<Location[]>([]);
     const [center, setCenter] = useState<Coordinates>({
         latitude:latitude,
@@ -24,7 +24,6 @@ const MapResults = () => {
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
     const handleLocationTextClick = (coordinates:Coordinates) => {
-        setCenter(coordinates);
         setZoom(ZOOM_IN);
         if(mapRef.current) {
             mapRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -40,14 +39,15 @@ const MapResults = () => {
     const handleToggleShowAllResults = () => setShowAllResults(!showAllResults);
 
     useEffect(()=> {
+        setCenter({latitude:latitude,longitude:longitude});
         refetch().then(newLocations => {
             if(newLocations.data)
                 setLocations(newLocations.data);
         });
-    },[latitude,longitude,radius,refetch]);
+    },[latitude,longitude,radius]);
 
     return (
-        <Box key={latitude} sx={{ paddingBlock: "1rem 2rem" }}>
+        <Box sx={{ paddingBlock: "1rem 2rem" }}>
             <Box sx={{ display: "flex", flexFlow:"row wrap", gap: "2rem", marginBlock: "1rem 2rem", }}>
                 <Button 
                     variant="outlined" 
@@ -66,78 +66,80 @@ const MapResults = () => {
                     {!showAllResults ? "Show all locations" : "Show Top 5 locations"}
                 </Button>
             </Box>
-            <Box display={"flex"} flexDirection={!isDesktop ? "column" : "row"} gap="5vw" marginBottom="2rem">
-                <Box>
-                    <Typography variant={"h3"}>
-                        <u>
-                            {!showAllResults ? 
-                                "Closest 5 locations" : `All ${locations.length - 1} locations in radius` } 
-                        </u>
-                    </Typography>
-                    <ol>
-                        {!locations || locations.length <= 0 ? undefined :
-                            locations.map((location:any,index:number)=> {
-                                return (
-                                    <li 
-                                        key={index} 
-                                        style={{ 
-                                            marginBlock: index !== 0 ? "1rem" : "0 1rem", 
-                                            display: !showAllResults && index >= 5 ? "none" : "list-item" ,
-                                            textIndent: "-1rem",
-                                            paddingLeft: "1rem"
-                                        }}
-                                    >
-                                        <button 
-                                            style={{
-                                                border:"none",
-                                                cursor:"pointer",
-                                                background:"none",
-                                                fontSize:theme.typography.htmlFontSize,
-                                                color:theme.palette.secondary.main,
-                                                textDecoration: "underline"
+            {!locations || locations.length <= 0 ? undefined : 
+                <Box display={"flex"} flexDirection={!isDesktop ? "column" : "row"} gap="5vw" marginBottom="2rem">
+                    <Box>
+                        <Typography variant={"h3"}>
+                            <u>
+                                {!showAllResults ? 
+                                    "Closest 5 locations" : `All ${locations.length} locations in radius` } 
+                            </u>
+                        </Typography>
+                        <ol>
+                            {!locations || locations.length <= 0 ? undefined :
+                                locations.map((location:any,index:number)=> {
+                                    return (
+                                        <li 
+                                            key={index} 
+                                            style={{ 
+                                                marginBlock: index !== 0 ? "1rem" : "0 1rem", 
+                                                display: !showAllResults && index >= 5 ? "none" : "list-item" ,
+                                                textIndent: "-1rem",
+                                                paddingLeft: "1rem"
                                             }}
-                                            onClick={()=>handleLocationTextClick(
-                                                { latitude:location.latitude,longitude:location.longitude }
-                                            )}
                                         >
-                                            {location.name}
-                                        </button>
+                                            <button 
+                                                style={{
+                                                    border:"none",
+                                                    cursor:"pointer",
+                                                    background:"none",
+                                                    fontSize:theme.typography.htmlFontSize,
+                                                    color:theme.palette.secondary.main,
+                                                    textDecoration: "underline"
+                                                }}
+                                                onClick={()=>handleLocationTextClick(
+                                                    { latitude:location.latitude,longitude:location.longitude }
+                                                )}
+                                            >
+                                                {location.name}
+                                            </button>
                                 &nbsp;- {location.distance} mile(s) away -&nbsp;
-                                        <Link 
-                                            href={location.directionsUri} 
-                                            target="_blank" 
-                                            style={{color:theme.palette.secondary.main}}
-                                        >
+                                            <Link 
+                                                href={location.directionsUri} 
+                                                target="_blank" 
+                                                style={{color:theme.palette.secondary.main}}
+                                            >
                                             Get Directions
-                                        </Link>
-                                    </li>
-                                );
-                            })}
-                    </ol>
-                </Box>
-                <Box>
-                    <Typography variant={"h3"}><u>Showing locations within {radius} miles</u></Typography>
-                    <Box sx={{ maxWidth: "16rem" }}>
-                        <label htmlFor="slider">
-                            <Typography variant={"h4"} padding="1rem 0 0.5rem 0">
-                                Use the slider to change your search radius:
-                            </Typography>
-                        </label>
-                        <Slider
-                            id="slider" 
-                            value={radius} 
-                            color={"secondary"} 
-                            valueLabelDisplay="auto" 
-                            style={{ marginTop: "0.5rem" }}
-                            step={1}
-                            min={1}
-                            max={100}
-                            onChange={(event:any)=>setRadius(event?.target.value)}
-                        />
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
+                        </ol>
                     </Box>
-                </Box>
-            </Box>
-            <div ref={mapRef}>
+                    <Box>
+                        <Typography variant={"h3"}><u>Showing locations within {radius} miles</u></Typography>
+                        <Box sx={{ maxWidth: "16rem" }}>
+                            <label htmlFor="slider">
+                                <Typography variant={"h4"} padding="1rem 0 0.5rem 0">
+                                Use the slider to change your search radius:
+                                </Typography>
+                            </label>
+                            <Slider
+                                id="slider" 
+                                value={radius} 
+                                color={"secondary"} 
+                                valueLabelDisplay="auto" 
+                                style={{ marginTop: "0.5rem" }}
+                                step={1}
+                                min={1}
+                                max={20}
+                                onChange={(event:any)=>setRadius(event?.target.value)}
+                                marks={[{value: 1, label: '1 mile'},{value: 20, label: '20 miles'}]}
+                            />
+                        </Box>
+                    </Box>
+                </Box>}
+            <div ref={mapRef} key={center.latitude}>
                 <LeafletMap 
                     mapHeight={"80vh"}
                     mapWidth={"100%"}

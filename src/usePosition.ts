@@ -6,10 +6,20 @@ export const usePosition = () => {
     const [error, setError] = useState<string>('');
     
     const onChange = ({coords}:{coords:Coordinates}) => {
-        setPosition({
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-        });
+        /*
+            Reference: https://blis.com/precision-matters-critical-importance-decimal-places-five-lowest-go/ 
+            for lat/long precision.
+        */
+        const newLat = parseFloat(coords.latitude.toFixed(3));
+        const newLon = parseFloat(coords.longitude.toFixed(3));
+        
+        if(newLat !== position.latitude || newLon !== position.longitude) {
+            setPosition({
+                latitude: newLat,
+                longitude: newLon,
+            });
+        }
+
     };  
 
     const onError = (error:{message:string}) => {

@@ -67,7 +67,7 @@ const LeafletMap = ({
                         position={[coordinates.latitude, coordinates.longitude]}
                     >
                         <leaflet.Popup>
-                            You are here!
+                        📍You are here!
                         </leaflet.Popup>
                     </leaflet.Marker>
                     {!locations || locations.length <= 0 ? undefined :
@@ -79,7 +79,7 @@ const LeafletMap = ({
                                     position={[location.latitude, location.longitude]}
                                 >
                                     <leaflet.Popup>
-                                        <strong><u>{location.name}</u></strong><br/>
+                                        <strong><u>🛒 {location.name}</u></strong><br/>
                                         {location.streetAddress}<br/>
                                         {location.city}, {location.state} {location.zipCode}<br/>
                                         <Link href={location.directionsUri} target="_blank">Directions</Link>

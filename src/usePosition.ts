@@ -27,7 +27,7 @@ export const usePosition = () => {
         if(error.message.includes("User denied geolocation prompt")) {
             return setError(
                 `<p style='margin-bottom:2rem'>
-                    You denied the geolocation prompt. Using default coordinates for the city of Portland, Maine.
+                    You denied the geolocation prompt 😕. Using coordinates of Portland City Hall (Maine).
                 </p>`);
         }
         return setError(`<p style='margin-bottom:2rem'>${error.message}</p>`);

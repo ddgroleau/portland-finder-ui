@@ -9,7 +9,7 @@ type RadiusSliderProps = {
 
 const RadiusSlider = ({radius,setRadius}:RadiusSliderProps) => {
     return (
-        <Box width="100%">
+        <Box width="fit-content">
             <Typography variant={"h3"}><u>Showing locations within {radius} miles</u></Typography>
             <Box sx={{ maxWidth: "16rem" }}>
                 <label htmlFor="slider">

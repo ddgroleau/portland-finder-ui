@@ -1,3 +1,4 @@
+import { Message } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { Coordinates, defaultCoordinates } from "./coordinates";
 
@@ -23,7 +24,13 @@ export const usePosition = () => {
     };  
 
     const onError = (error:{message:string}) => {
-        setError(error.message);
+        if(error.message.includes("User denied geolocation prompt")) {
+            return setError(
+                `<p style='margin-bottom:2rem'>
+                    You denied the geolocation prompt. Using default coordinates for the city of Portland, Maine.
+                </p>`);
+        }
+        return setError(`<p style='margin-bottom:2rem'>${error.message}</p>`);
     }; 
 
     useEffect(() => {

@@ -24,6 +24,7 @@ const MapResults = () => {
     const [zoom, setZoom] = useState<number>(ZOOM_OUT);
     const mapRef = useRef<null | HTMLDivElement>(null);
     const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+    const hasLocations = locations && locations.length > 0;
 
     const handleLocationTextClick = (coordinates:Coordinates) => {
         setZoom(ZOOM_IN);
@@ -41,6 +42,7 @@ const MapResults = () => {
     const handleToggleShowAllResults = () => setShowAllResults(!showAllResults);
 
     useEffect(()=> {
+        setZoom(ZOOM_OUT - (radius/10));
         setCenter({latitude:latitude,longitude:longitude});
 
         if(debounceTimeout) clearTimeout(debounceTimeout);
@@ -54,6 +56,7 @@ const MapResults = () => {
 
     return (
         <Box sx={{ paddingBlock: "1rem 2rem" }}>
+            <span dangerouslySetInnerHTML={{__html: error}}></span>
             <Box sx={{ display: "flex", flexFlow:"row wrap", gap: "2rem", marginBlock: "1rem 2rem", }}>
                 <Button 
                     variant="outlined" 
@@ -63,6 +66,7 @@ const MapResults = () => {
                 >
                     Scroll to map
                 </Button>
+                {hasLocations && 
                 <Button 
                     variant="outlined" 
                     color="secondary" 
@@ -71,9 +75,14 @@ const MapResults = () => {
                 >
                     {!showAllResults ? "Show all locations" : "Show Top 5 locations"}
                 </Button>
+                }
             </Box>
-            {!locations || locations.length <= 0 ? undefined : 
-                <Box display={"flex"} flexDirection={!isDesktop ? "column" : "row"} gap="5vw" marginBottom="2rem">
+            <Box display={"flex"} flexDirection={!isDesktop ? "column" : "row"} gap="5vw" marginBottom="2rem">
+                <RadiusSlider radius={radius} setRadius={setRadius} />
+                { !hasLocations ? 
+                    <Typography variant={"h3"} sx={{ marginBottom: "2rem" }}>
+                        No locations found in your selected radius.
+                    </Typography> :
                     <Box width="100%">
                         <Typography variant={"h3"}>
                             <u>
@@ -81,7 +90,7 @@ const MapResults = () => {
                                     "Closest 5 locations" : `All ${locations.length} locations in radius` } 
                             </u>
                         </Typography>
-                        <ol>
+                        <ol style={{ marginBottom: "2rem" }}>
                             {!locations || locations.length <= 0 ? undefined :
                                 locations.map((location:any,index:number)=> {
                                     return (
@@ -122,8 +131,8 @@ const MapResults = () => {
                                 })}
                         </ol>
                     </Box>
-                    <RadiusSlider radius={radius} setRadius={setRadius} />
-                </Box>}
+                }
+            </Box>
             <div ref={mapRef} key={center.latitude}>
                 <LeafletMap 
                     mapHeight={"80vh"}

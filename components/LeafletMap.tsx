@@ -54,6 +54,7 @@ const LeafletMap = ({
                 <leaflet.MapContainer 
                     center={[center.latitude, center.longitude]} 
                     zoom={zoom} 
+                    key={zoom}
                     scrollWheelZoom={false} 
                     style={{ height: mapHeight, width: mapWidth }}>
                     <leaflet.TileLayer
